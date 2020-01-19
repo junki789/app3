@@ -1,5 +1,5 @@
 class Api::V1::EmployeesController < ApiController
-  before_action :set_employee, only: [:show]
+  before_action :set_employee, only: [:show, :update]
 
   # ActiveRecordのレコードが見つからなければ404 not foundを応答する
   rescue_from ActiveRecord::RecordNotFound do |exception|
@@ -21,6 +21,14 @@ class Api::V1::EmployeesController < ApiController
       render json: employee, status: :created
     else
       render json: { errors: employee.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    if @employee.update_attributes(employee_params)
+      head :no_content
+    else
+      render json: { errors: @employee.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
